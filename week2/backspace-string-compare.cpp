@@ -1,3 +1,5 @@
+// Note - was very drunk when I did this
+
 class Solution {
 public:
     bool backspaceCompare(string S, string T) {
