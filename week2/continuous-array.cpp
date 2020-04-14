@@ -5,6 +5,7 @@ public:
         int deviator = 0;
         
         map<int, int> deviationSizes;
+        map<int, int>::iterator mit;
         deviationSizes[0] = 0;
 
         for (vector<int>::iterator it = nums.begin(); it != nums.end(); ++it) {
@@ -18,8 +19,8 @@ public:
             }
             
             // Try and find the deviation before and measure length, otherwise store it
-            if (deviationSizes.find(deviator) != deviationSizes.end()) {
-                currentLength = travelled - deviationSizes[deviator];
+            if ((mit = deviationSizes.find(deviator)) != deviationSizes.end()) {
+                currentLength = travelled - mit->second;
                 if (currentLength > longestLength) {
                     longestLength = currentLength;
                 }
@@ -31,4 +32,4 @@ public:
         return longestLength;
     }
 };
- 
+
