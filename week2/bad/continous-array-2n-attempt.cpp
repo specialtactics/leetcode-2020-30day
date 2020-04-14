@@ -1,32 +1,37 @@
+// Does not work, but idea was efficient (original attempt)
+
 class Solution {
 public:
     int findMaxLength(vector<int>& nums) {
+        int result1 = checkStart(0, nums);
+        int result2 = checkStart(1, nums);
+        
+        return max(result1, result2);
+    }
+
+private:
+    // Check nums against a given start condition
+    int checkStart(int startCondition, vector<int>& nums) {
         int longestLength = 0;
         
         int slackLeft = 0;
         int groupLength = -1;
-        int incrementIterator = 0;
         
-        vector<int>::iterator it = nums.begin();
+        vector<int>::iterator it = nums.begin(), groupStartIt;
         
         // Iterate
         while (it != nums.end())  {
             // Measure the length of one group
             if (*it == startCondition) {
-                groupLength = measureGroup(it, nums.end(), slackLeft);
+                groupStartIt = it;
+                
+                groupLength = measureGroup(startCondition, &it, nums.end(), slackLeft);
                     
                 if (groupLength > longestLength) {
                     longestLength = groupLength;
                 }
-
-                /*
-                incrementIterator = groupLength / 10;
-                if (incrementIterator > 0) {
-                    it += incrementIterator;           
-                }
-                */
                 
-                slackLeft = 0;
+                slackLeft = determineSlack(groupStartIt, it, startCondition);
             } else {
                 ++slackLeft;
             }
@@ -34,16 +39,13 @@ public:
             ++it;
         }
         
-        return longestLength;        
+        return longestLength;
     }
-
-private:
-    // Start condition for group
-    int startCondition = 0;
     
     // Measure the length of one group
-    int measureGroup(vector<int>::iterator it, vector<int>::iterator end, int slackLeft) {
-        vector<int>::iterator potentialEndOfGroup = it;
+    int measureGroup(int startCondition, vector<int>::iterator* originalIt, vector<int>::iterator end, int slackLeft) {
+        vector<int>::iterator potentialEndOfGroup, it = *originalIt;
+        potentialEndOfGroup = it;
         int targetCount = 0;
         
         // Current length of group
@@ -67,7 +69,7 @@ private:
                     groupLength = targetCount;
                     potentialEndOfGroup = it;
                     
-                    //cout << " Forward " << targetCount << "\n";
+                    cout << " Forward " << targetCount << "\n";
                 }
             }
             // Backwards case
@@ -77,20 +79,36 @@ private:
                     groupLength = targetCount;
                     potentialEndOfGroup = it;
                     
-                    //cout << " Backward " << targetCount << "\n";
+                    cout << " Backward " << targetCount << "\n";
                 }
             }
             
-            // Break early if possible
-            if (groupDistance > targetCount * 4) {
-                break;
-            }             
-             
             ++it;
         }
         
+        // Restore iterator to the end of this group, so that next group can be considered correctly
+        *originalIt = potentialEndOfGroup;
+        
         // Double as we stored the target count
         return (groupLength * 2);        
+    }
+    
+    // Determine accurate amount of "slack" for the next group
+    int determineSlack(vector<int>::iterator groupStart, vector<int>::iterator current, int startCondition) {
+        int slack = 0;
+        
+        while (*current != startCondition) {
+            --current;
+            ++slack;
+            
+            if (current == groupStart) {
+                break;
+            }
+        }
+        
+        cout << "Slack: " << slack << "\n";
+        
+        return slack;
     }
 };
  
