@@ -1,4 +1,4 @@
- class Solution {
+class Solution {
 public:
     vector<int> productExceptSelf(vector<int>& nums) {
         map<int, int> results;
@@ -16,14 +16,17 @@ public:
                 seenIt = false;
             }
             
-            // Multiply through
-            for (mapIt = results.begin(); mapIt != results.end(); ++mapIt) {
-                if (mapIt->first != *it || seenIt) {
-                    mapIt->second *= *it;
+            // Small optimsation
+            if (*it != 1) {
+                // Multiply through
+                for (mapIt = results.begin(); mapIt != results.end(); ++mapIt) {
+                    if (mapIt->first != *it || seenIt) {
+                        mapIt->second *= *it;
+                    }
                 }
+
+                resultSoFar *= *it;
             }
-            
-            resultSoFar *= *it;
         }
         
         for (vector<int>::iterator it = nums.begin(); it != nums.end(); ++it) {
