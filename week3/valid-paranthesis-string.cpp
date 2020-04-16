@@ -1,5 +1,6 @@
 // Probably bigger than it needs to be, but I'm feeling lazy !
 // Performance is also perfect so :shrug:
+// Could probably just make a reversed copy of the string, and pass in the 2 characters rather than hardcoding.
 
 class Solution {
 public:
